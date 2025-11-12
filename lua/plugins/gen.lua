@@ -1,5 +1,6 @@
 -- Custom Parameters (with defaults)
 return {
+  -- quick LLM task
   {
     "phongphuhanam/gen.nvim",
     enable = true,
@@ -37,5 +38,62 @@ return {
     keys = {
       { "<leader>as", ':lua require("gen").select_model()<cr>', desc = "Select model" },
     },
+  },
+  { -- LLMs
+    "olimorris/codecompanion.nvim",
+    version = "*",
+    enabled = true,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-telescope/telescope.nvim",
+    },
+    keys = {
+      { "<leader>ac", ":CodeCompanionChat Toggle<cr>", desc = "[a]i [c]hat" },
+      { "<leader>aa", ":CodeCompanionActions<cr>", desc = "[a]i [a]actions" },
+    },
+    config = function()
+      require("codecompanion").setup({
+        display = {
+          diff = {
+            enabled = true,
+          },
+        },
+        adapters = {
+          http = {
+            ollama = function()
+              return require("codecompanion.adapters").extend("ollama", {
+                name = "gpt-oss:latest",
+                env = {
+                  url = (os.getenv("OLLAMA_HOST") or "127.0.0.1") .. ":" .. tonumber(os.getenv("OLLAMA_PORT") or 11434),
+                  -- api_key = "OLLAMA_API_KEY",
+                },
+                headers = {
+                  ["Content-Type"] = "application/json",
+                  -- ["Authorization"] = "Bearer ${api_key}",
+                },
+                parameters = {
+                  sync = true,
+                },
+              })
+            end,
+          },
+        },
+        strategies = {
+          chat = {
+            adapter = "ollama",
+            -- adapter = 'copilot',
+          },
+          inline = {
+            adapter = "ollama",
+            -- adapter = 'copilot',
+          },
+          agent = {
+            adapter = "ollama",
+            -- adapter = 'copilot',
+          },
+        },
+      })
+    end,
   },
 }
