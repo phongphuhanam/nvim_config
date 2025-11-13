@@ -1,6 +1,15 @@
 return {
   -- color html colors
+
+  { "webhooked/oscura.nvim", enabled = true, lazy = false, priority = 1000, opts = {} },
   {
+    {
+      "LazyVim/LazyVim",
+      opts = {
+        colorscheme = "oscura",
+      },
+    },
+
     "NvChad/nvim-colorizer.lua",
     enabled = true,
     opts = {
